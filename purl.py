@@ -83,15 +83,15 @@ def http_connect_server(my_option: object, request_data: str):
     http方式连接服务器
     """
     if 0 != my_option.proxy_port:
-        HOST = my_option.proxy_ip
-        PORT = my_option.proxy_port
-        print('正在使用代理,端口为:' + HOST + ":" + str(PORT))
+        remote_ip = my_option.proxy_ip
+        remote_port = my_option.proxy_port
+        print('正在使用代理,端口为:' + remote_ip + ":" + str(remote_port))
     else:
-        HOST = my_option.ip
-        PORT = my_option.port
+        remote_ip = my_option.ip
+        remote_port = my_option.port
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((HOST, PORT))
+    s.connect((remote_ip, remote_port))
     s.send(request_data.encode("utf-8"))
     data = s.recv(2048)
     print(data.decode('utf-8'))
@@ -102,12 +102,12 @@ def https_connect_server(my_option: object, request_data: str):
     """
     https方式连接服务器
     """
-    HOST = my_option.ip
-    PORT = my_option.port
+    remote_ip = my_option.ip
+    remote_port = my_option.port
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
     context.load_verify_locations('/etc/ssl/certs/ca-certificates.crt')
-    with context.wrap_socket(socket.socket(socket.AF_INET, socket.SOCK_STREAM), server_hostname=HOST) as s:
-        s.connect((HOST, PORT))
+    with context.wrap_socket(socket.socket(socket.AF_INET, socket.SOCK_STREAM), server_hostname=remote_ip) as s:
+        s.connect((remote_ip, remote_port))
         s.send(request_data.encode("utf-8"))
         data = s.recv(2048)
         print(data.decode('utf-8'))
